@@ -1,0 +1,113 @@
+# Log Analyzer - Installation and Usage Instructions
+
+## System Requirements
+
+- Python 3.6 or higher
+- Sufficient RAM to handle memory-mapped file operations
+- Multi-core processor (recommended)
+- Sufficient disk space for log files and output
+
+## Installation
+
+1. Save the provided code as `log_analyzer.py`
+2. Ensure you have the required Python standard libraries (all libraries used are built-in)
+
+## Configuration
+
+Before running the analyzer, configure these parameters in the `main()` function:
+
+```python
+LOG_FILE = "sample.log"          # Path to your log file
+OUTPUT_CSV = "log_analysis_results.csv"  # Desired output file name
+FAILED_LOGIN_THRESHOLD = 10      # Number of failed attempts to flag as suspicious
+```
+
+## Log File Format
+
+The analyzer expects log files containing entries with:
+- IP addresses (in standard IPv4 format)
+- HTTP methods and endpoints (in standard HTTP request format)
+- Authentication status (including 401 errors or "Invalid credentials" messages)
+
+Example log entry format:
+```
+[timestamp] 192.168.1.1 - "GET /api/endpoint" status_code ...
+```
+
+## Performance Optimization
+
+For optimal performance, adjust these parameters in the `LogAnalyzer` class initialization:
+
+1. `chunk_size`: Default is 50000 bytes
+   - Increase for systems with more RAM
+   - Decrease if experiencing memory issues
+   ```python
+   analyzer = LogAnalyzer(
+       log_file=LOG_FILE,
+       output_csv=OUTPUT_CSV,
+       chunk_size=100000  # Adjust based on your system
+   )
+   ```
+
+2. `worker_processes`: Default is CPU cores minus 1
+   - Can be explicitly set for fine-tuned control
+   ```python
+   analyzer = LogAnalyzer(
+       log_file=LOG_FILE,
+       output_csv=OUTPUT_CSV,
+       worker_processes=4  # Set specific number of workers
+   )
+   ```
+
+## Running the Analyzer
+
+1. From the command line:
+   ```bash
+   python log_analyzer.py
+   ```
+
+2. Monitor the console for progress:
+   - The analyzer will display logging information
+   - Progress updates will show processing status
+   - Final results will be displayed in the terminal
+
+## Output
+
+The analyzer produces two types of output:
+
+1. Console output showing:
+   - Requests per IP address
+   - Most accessed endpoint
+   - Suspicious activity (IPs exceeding failed login threshold)
+
+2. CSV file containing:
+   - Detailed breakdown of requests per IP
+   - Most accessed endpoint statistics
+   - List of suspicious IPs and their failed login attempts
+
+## Troubleshooting
+
+If encountering memory issues:
+1. Reduce the `chunk_size` parameter
+2. Ensure sufficient free system memory
+3. Check log file permissions
+
+For performance issues:
+1. Increase `chunk_size` if memory allows
+2. Adjust `worker_processes` based on system capabilities
+3. Ensure the log file is on a fast storage device
+
+## Memory Usage Considerations
+
+The analyzer uses memory mapping for efficient file processing. Ensure your system has:
+- Available RAM of at least 2-3 times the chunk size
+- Sufficient virtual memory/swap space
+- No other memory-intensive processes running simultaneously
+
+## Best Practices
+
+1. Start with a small log file to test configuration
+2. Monitor system resources during first run
+3. Adjust parameters based on performance metrics
+4. Keep log files on local storage for better performance
+5. Regular cleanup of output CSV files to manage disk space
