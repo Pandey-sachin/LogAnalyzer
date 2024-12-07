@@ -38,7 +38,7 @@ Example log entry format:
 
 For optimal performance, adjust these parameters in the `LogAnalyzer` class initialization:
 
-1. `chunk_size`: Default is 50000 bytes
+1. `chunk_size`: Default is 50k bytes
    - Increase for systems with more RAM
    - Decrease if experiencing memory issues
    ```python
@@ -110,4 +110,3 @@ The analyzer uses memory mapping for efficient file processing. Ensure your syst
 2. Monitor system resources during first run
 3. Adjust parameters based on performance metrics
 4. Keep log files on local storage for better performance
-5. Regular cleanup of output CSV files to manage disk space
